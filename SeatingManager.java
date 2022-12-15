@@ -19,7 +19,7 @@ public class SeatingManager {
 	public LinkedList<CustomerGroup> waitGroupList = new LinkedList<CustomerGroup>();
 
 	/*
-		Time  : O(n) [n = number of tables]
+		Time  : O(n * h) [n = number of tables, h = height of vacantTables(bst)]
 		Memory: O(n) [n = number of tables]
 	*/
 	public SeatingManager(List<Table> tables) {
@@ -35,7 +35,7 @@ public class SeatingManager {
 	*/
 	public void assignSeats(CustomerGroup group, Table table) {
 		group.seatedTable = table;
-		BSTWithDuplication.deleteNode(this.vacantTables, table);
+		this.vacantTables = BSTWithDuplication.deleteNode(this.vacantTables, table);
 		table.numOfVacantSeats -= group.size;
 		if (table.numOfVacantSeats != 0) {
 			BSTWithDuplication.insert(this.vacantTables, table);
@@ -94,7 +94,7 @@ public class SeatingManager {
 		if (availableTable == null) {
 			addToWaitGroupList(group);
 		} else {
-			assignSeats(group, availableTable.table);
+			assignSeats(group, availableTable.table.getFirst());
 		}
 	}
 
@@ -107,7 +107,7 @@ public class SeatingManager {
 		group.seatedTable = null;
 		if (availableTable == null)
 			return;
-		BSTWithDuplication.deleteNode(this.vacantTables, availableTable);
+		this.vacantTables = BSTWithDuplication.deleteNode(this.vacantTables, availableTable);
 		availableTable.numOfVacantSeats += group.size;
 		BSTWithDuplication.insert(this.vacantTables, availableTable);
 		System.out.println(group + " left from " + availableTable
